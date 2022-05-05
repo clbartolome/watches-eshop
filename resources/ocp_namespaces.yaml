@@ -1,0 +1,72 @@
+---
+### CICD namespace ###
+apiVersion: v1 
+kind: Namespace 
+metadata:
+  name: watches-eshop-cicd 
+  annotations: 
+    openshift.io/description: "Watches EShop CICD environment" 
+    openshift.io/display-name: "Watches EShop CICD"
+  labels:
+    kubernetes.io/metadata.name: watches-eshop-cicd
+spec:
+  finalizers: 
+  - kubernetes
+---
+### dev namespace ###
+apiVersion: v1 
+kind: Namespace 
+metadata:
+  name: watches-eshop-dev 
+  annotations: 
+    openshift.io/description: "Watches EShop DEV environment" 
+    openshift.io/display-name: "Watches EShop DEV"
+  labels:
+    kubernetes.io/metadata.name: watches-eshop-dev
+spec:
+  finalizers: 
+  - kubernetes
+---
+### dev rolebindind to allow argo CD create resources ###
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: RoleBinding
+metadata:
+  name: watches-eshop-dev-role-binding
+  namespace: watches-eshop-dev 
+roleRef:
+  apiGroup: rbac.authorization.k8s.io 
+  kind: ClusterRole
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller 
+  namespace: openshift-gitops
+---
+### prod namespace ###
+apiVersion: v1 
+kind: Namespace 
+metadata:
+  name: watches-eshop-prod 
+  annotations: 
+    openshift.io/description: "Book Strore PROD environment" 
+    openshift.io/display-name: "Watches EShop PROD"
+  labels:
+    kubernetes.io/metadata.name: watches-eshop-prod
+spec:
+  finalizers: 
+  - kubernetes
+---
+### prod rolebindind to allow argo CD create resources ###
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: RoleBinding
+metadata:
+  name: watches-eshop-prod-role-binding
+  namespace: watches-eshop-prod 
+roleRef:
+  apiGroup: rbac.authorization.k8s.io 
+  kind: ClusterRole
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller 
+  namespace: openshift-gitops
