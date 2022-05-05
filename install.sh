@@ -1,13 +1,13 @@
 #!/bin/bash
 
 ##############################################################################
-# FUNCTIONS
+# -- FUNCTIONS --
 info() {
     printf "\n++++++++++ INFO: $@\n"
 }
 
 err() {
-  printf "\n# ERROR: $1\n"
+  printf "\n!!!!!!!!!! ERROR: $1\n"
   exit 1
 }
 
@@ -47,17 +47,19 @@ create_mongo() # service_name, user, pass, namespace, main_app
 ##############################################################################
 
 ##############################################################################
-# VALUES
+# -- VALUES --
 declare -r APP="watches-eshop"
 declare -r DEV_PR="$APP-dev"
 declare -r PRO_PR="$APP-prod"
 declare -r CICD_PR="$APP-cicd"
 declare -r DB_USER="db_user"
 declare -r DB_PASS="pa5sw0rD"
+declare -r GITEA_USER="gitea"
+declare -r GITEA_PASS="openshift"
 ##############################################################################
 
 ##############################################################################
-# EXECUTION
+# -- EXECUTION --
 oc version >/dev/null 2>&1 || err "no oc client found"
 
 # NAMESPACES
@@ -72,4 +74,39 @@ create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR
 create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
 create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
 create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
-##############################################################################
+
+# GITEA
+info "Deploying GITEA to $CICD_PR namespace"
+oc apply -f resources/gitea/gitea_deployment.yaml -n $CICD_PR
+
+GITEA_HOSTNAME=$(oc get route gitea -o template --template='{{.spec.host}}' -n $CICD_PR)
+sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
+oc rollout status deployment/gitea -n $CICD_PR
+
+info "Creating GITEA user and cloning repositories"
+curl -X POST \
+  -d '{"username":"'$GITEA_USER'","password":"'$GITEA_PASS'","retype":"'$GITEA_PASS'","email":"gitea@gitea.com","send_notify":false}' \
+  -H "Content-Type: application/json" \
+  http://$GITEA_HOSTNAME/user/sign_up
+
+RESPONSE=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST \
+  -u $GITEA_USER:$GITEA_PASS \
+  -d '{"clone_addr": "https://github.com/clbartolome/watches-eshop-source", "repo_name": "watches-eshop-source"}' \
+  -H "Content-Type: application/json" \
+  http://$GITEA_HOSTNAME/api/v1/repos/migrate)
+
+if [ "$RESPONSE" != "201" ]; then
+    echo "Error migrating watches-eshop-source repository"
+fi
+
+RESPONSE=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST \
+  -u $GITEA_USER:$GITEA_PASS \
+  -d '{"clone_addr": "https://github.com/clbartolome/watches-eshop", "repo_name": "watches-eshop"}' \
+  -H "Content-Type: application/json" \
+  http://$GITEA_HOSTNAME/api/v1/repos/migrate)
+
+if [ "$RESPONSE" != "201" ]; then
+    echo "Error migrating watches-eshop repository"
+fi
+
+# ##############################################################################
