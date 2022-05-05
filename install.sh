@@ -3,39 +3,46 @@
 ##############################################################################
 # FUNCTIONS
 info() {
-    printf "\n# INFO: $@\n"
+    printf "\n++++++++++ INFO: $@\n"
 }
 
 err() {
   printf "\n# ERROR: $1\n"
   exit 1
 }
-create_postgres()
-{
-  local service_name=$1
-  local user=$2
-  local pass=$3
-  local database=$4
-  local namespace=$5
-  local main_app=$6
-  info "Deploying Postgresql $service_name in $namespace ..."
-  oc new-app postgresql-persistent \
-    --param DATABASE_SERVICE_NAME=$service_name \
-    --param POSTGRESQL_USER=$user \
-    --param POSTGRESQL_PASSWORD=$pass \
-    --param POSTGRESQL_DATABASE=$database \
-    -n $namespace
-  oc label dc catalog-db-dev \
-    app.kubernetes.io/part-of=$main_app \
-    app.openshift.io/runtime=postgresql \
-    -n $namespace
 
-  echo "Waiting for $1 pod to start.  You can safely exit this with Ctrl+C or just wait."
-  until  oc get pods -l name=$service_name -n $namespace | grep -m 1 "Running"
-  do
-    sleep 2
-  done
-  info "Deployed Postgresql $service_name in $namespace!"
+create_postgres() # service_name, user, pass, database, namespace, main_app
+{
+  info "Deploying Postgresql $1 in $5 ..."
+  oc new-app postgresql-persistent \
+    --param DATABASE_SERVICE_NAME=$1 \
+    --param POSTGRESQL_USER=$2 \
+    --param POSTGRESQL_PASSWORD=$3 \
+    --param POSTGRESQL_DATABASE=$4 \
+    -n $5
+  oc label dc $1 \
+    app.kubernetes.io/part-of=$6 \
+    app.openshift.io/runtime=postgresql \
+    -n $5
+  sleep 5
+  oc wait pod -l name=$1 --for=condition=Ready -n $5
+  info "Deployed Postgresql $1 in $5!"
+}
+create_mongo() # service_name, user, pass, namespace, main_app
+{
+  info "Deploying MongoDB $1 in $4 ..."
+  oc new-app --docker-image=mongo:latest \
+    -e MONGO_INITDB_ROOT_USERNAME=$2 \
+    -e MONGO_INITDB_ROOT_PASSWORD=$3 \
+    --name $1 \
+    -n $4
+  oc label deploy $1 \
+    app.kubernetes.io/part-of=$5 \
+    app.openshift.io/runtime=mongodb \
+    -n $4
+  sleep 5
+  oc wait pod -l deployment=$1 --for=condition=Ready -n $4
+  info "Deployed MongoDB $1 in $4!"
 }
 ##############################################################################
 
@@ -61,4 +68,8 @@ oc apply -f  resources/ocp_namespaces.yaml
 info "Deploying databases into application namespaces"
 create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
 create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
+create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
+create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
+create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
+create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
 ##############################################################################
