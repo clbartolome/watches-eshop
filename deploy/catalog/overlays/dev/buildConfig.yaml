@@ -11,7 +11,7 @@ spec:
   source:
     contextDir: catalog
     git:
-      uri: @GITEA_HOST_CHANGEME/gitea/watches-eshop-source
+      uri: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop-source
     type: Git
   strategy:
     sourceStrategy:
