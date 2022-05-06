@@ -51,8 +51,6 @@ declare -r PRO_PR="$APP-prod"
 declare -r CICD_PR="$APP-cicd"
 declare -r DB_USER="db_user"
 declare -r DB_PASS="pa5sw0rD"
-declare -r GITEA_USER="gitea"
-declare -r GITEA_PASS="openshift"
 ##############################################################################
 
 ##############################################################################
@@ -64,13 +62,13 @@ info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
 oc apply -f  resources/ocp_namespaces.yaml
 
 # DATABASES
-info "Deploying databases into application namespaces"
+# info "Deploying databases into application namespaces"
 create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
 create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
-create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
-create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
-create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
-create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
+# create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
+# create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
+# create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
+# create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
 
 # GITEA
 info "Deploying GITEA to $CICD_PR namespace"
@@ -80,33 +78,21 @@ GITEA_HOSTNAME=$(oc get route gitea -o template --template='{{.spec.host}}' -n $
 sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
 oc rollout status deployment/gitea -n $CICD_PR
 
-info "Creating GITEA user and cloning repositories"
-curl -X POST \
-  -d '{"username":"'$GITEA_USER'","password":"'$GITEA_PASS'","retype":"'$GITEA_PASS'","email":"gitea@gitea.com","send_notify":false}' \
-  -H "Content-Type: application/json" \
-  http://$GITEA_HOSTNAME/user/sign_up
+info "Configuring GITEA repository (user, repositories and host)"
+sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
+oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 
-RESPONSE=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST \
-  -u $GITEA_USER:$GITEA_PASS \
-  -d '{"clone_addr": "https://github.com/clbartolome/watches-eshop-source", "repo_name": "watches-eshop-source"}' \
-  -H "Content-Type: application/json" \
-  http://$GITEA_HOSTNAME/api/v1/repos/migrate)
+# ARGOCD
+info "Creating ArgoCD instance"
+oc apply -f resources/argocd/instance.yaml -n $CICD_PR
+info "Wait for Argo CD route..."
+until oc get route argocd-server -n $cicd_prj >/dev/null 2>/dev/null
+do
+  sleep 3
+done
+oc apply -f resources/argocd/watches-eshop.yaml
 
-if [ "$RESPONSE" != "201" ]; then
-    echo "Error migrating watches-eshop-source repository"
-fi
 
-RESPONSE=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST \
-  -u $GITEA_USER:$GITEA_PASS \
-  -d '{"clone_addr": "https://github.com/clbartolome/watches-eshop", "repo_name": "watches-eshop"}' \
-  -H "Content-Type: application/json" \
-  http://$GITEA_HOSTNAME/api/v1/repos/migrate)
-
-if [ "$RESPONSE" != "201" ]; then
-    echo "Error migrating watches-eshop repository"
-fi
-
-info "Updating GITEA repository host to: http://$GITEA_HOSTNAME"
 
 
 # ##############################################################################

@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: catalog
+spec:
+  generators:
+    - git:
+        repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
+        revision: master
+        files:
+          - path: "argocd/configuration/*.json"
+  template:
+    metadata:
+      name: 'catalog-{{ environment }}'
+    spec:
+      project: default
+      source:
+        repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
+        targetRevision: '{{ argo_config.branch }}'
+        path: 'deploy/catalog/overlays/{{ environment }}'
+      destination:
+        server: '{{ k8s_cluster.address }}'
+        namespace: '{{ k8s_cluster.namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
