@@ -85,11 +85,9 @@ oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 # ARGOCD
 info "Creating ArgoCD instance"
 oc apply -f resources/argocd/instance.yaml -n $CICD_PR
-info "Wait for Argo CD route..."
-until oc get route argocd-server -n $cicd_prj >/dev/null 2>/dev/null
-do
-  sleep 3
-done
+oc wait pod -l app.kubernetes.io/name=argocd-server --for=condition=Ready -n $CICD_PR
+
+info "Creating Watches Eshop Applications"
 oc apply -f resources/argocd/watches-eshop.yaml
 
 
