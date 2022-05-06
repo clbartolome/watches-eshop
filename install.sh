@@ -10,7 +10,6 @@ err() {
   printf "\n!!!!!!!!!! ERROR: $1\n"
   exit 1
 }
-
 create_postgres() # service_name, user, pass, database, namespace, main_app
 {
   info "Deploying Postgresql $1 in $5 ..."
@@ -26,7 +25,6 @@ create_postgres() # service_name, user, pass, database, namespace, main_app
     -n $5
   sleep 5
   oc wait pod -l name=$1 --for=condition=Ready -n $5
-  info "Deployed Postgresql $1 in $5!"
 }
 create_mongo() # service_name, user, pass, namespace, main_app
 {
@@ -42,7 +40,6 @@ create_mongo() # service_name, user, pass, namespace, main_app
     -n $4
   sleep 5
   oc wait pod -l deployment=$1 --for=condition=Ready -n $4
-  info "Deployed MongoDB $1 in $4!"
 }
 ##############################################################################
 
@@ -108,5 +105,8 @@ RESPONSE=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST \
 if [ "$RESPONSE" != "201" ]; then
     echo "Error migrating watches-eshop repository"
 fi
+
+info "Updating GITEA repository host to: http://$GITEA_HOSTNAME"
+
 
 # ##############################################################################
