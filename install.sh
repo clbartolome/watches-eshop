@@ -57,9 +57,9 @@ declare -r DB_PASS="pa5sw0rD"
 # -- EXECUTION --
 # oc version >/dev/null 2>&1 || err "no oc client found or not logged into a valid OCP cluster"
 
-# # NAMESPACES
-# info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
-# oc apply -f  resources/ocp_namespaces.yaml
+# NAMESPACES
+info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
+oc apply -f  resources/ocp_namespaces.yaml
 
 # # DATABASES
 # # info "Deploying databases into application namespaces"
@@ -70,25 +70,25 @@ declare -r DB_PASS="pa5sw0rD"
 # # create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
 # # create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
 
-# # GITEA
-# info "Deploying GITEA to $CICD_PR namespace"
-# oc apply -f resources/gitea/gitea_deployment.yaml -n $CICD_PR
+# GITEA
+info "Deploying GITEA to $CICD_PR namespace"
+oc apply -f resources/gitea/gitea_deployment.yaml -n $CICD_PR
 
 GITEA_HOSTNAME=$(oc get route gitea -o template --template='{{.spec.host}}' -n $CICD_PR)
-# sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
-# oc rollout status deployment/gitea -n $CICD_PR
+sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
+oc rollout status deployment/gitea -n $CICD_PR
 
-# info "Configuring GITEA repository (user, repositories and host)"
-# sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
-# oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
+info "Configuring GITEA repository (user, repositories and host)"
+sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
+oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 
-# # ARGOCD
+# ARGOCD
 # info "Creating ArgoCD instance"
 # oc apply -f resources/argocd/instance.yaml -n $CICD_PR
 # sleep 10
 # oc wait pod -l app.kubernetes.io/name=argocd-server --for=condition=Ready -n $CICD_PR
 
-info "Creating Watches Eshop Applications"
+# info "Creating Watches Eshop Applications"
 sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f - -n $CICD_PR
 
 

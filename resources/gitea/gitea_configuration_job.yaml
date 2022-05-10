@@ -16,7 +16,7 @@ spec:
         image: quay.io/calopezb/git-utils:1.0.0
         env:
         - name: GITEA_HOSTNAME
-          value: @GITEA_HOSTNAME
+          value: @HOSTNAME
         command:
         - /bin/sh
         - '-c'
@@ -60,8 +60,8 @@ spec:
           cd watches-eshop
           git config user.email "gitea@gitea.com"
           git config user.name "gitea"
-          grep -rl "@GITEA_HOSTNAME" resources/argocd/ | xargs sed -i "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g"
-          grep -rl "@GITEA_HOSTNAME" deploy/ | xargs sed -i "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g"
+          grep -rl "@GITEA_HOST_CHANGEME" resources/argocd/ | xargs sed -i "s/@GITEA_HOST_CHANGEME/$GITEA_HOSTNAME/g"
+          grep -rl "@GITEA_HOST_CHANGEME" deploy/ | xargs sed -i "s/@GITEA_HOST_CHANGEME/$GITEA_HOSTNAME/g"
           git add . && git commit -m "Updated Gitea host" && git push
           
           echo "------------------------------"

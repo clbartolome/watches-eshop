@@ -11,25 +11,25 @@ resources:
 nameSuffix: -dev
 
 commonLabels:
-  app: catalog-dev
-  app.kubernetes.io/component: catalog-dev
-  app.kubernetes.io/instance: catalog-dev
+  app: eshop-ui-dev
+  app.kubernetes.io/component: eshop-ui-dev
+  app.kubernetes.io/instance: eshop-ui-dev
   app.kubernetes.io/part-of: watches-eshop-dev
 
 patches:
 - ./deployment.yaml
 
 configMapGenerator:
-- name: catalog-configuration
+- name: eshop-ui-configuration
   envs:
   - properties.env
 
 secretGenerator:
-- name: catalog-secured-configuration
+- name: eshop-ui-secured-configuration
   envs:
   - secured.env
 
 images:
-- name: catalog
-  newName: image-registry.openshift-image-registry.svc:5000/watches-eshop-dev/catalog-dev
+- name: eshop-ui
+  newName: image-registry.openshift-image-registry.svc:5000/watches-eshop-dev/eshop-ui-dev
   newTag: latest

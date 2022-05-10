@@ -5,7 +5,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: http://@GITEA_HOSTNAME/gitea/watches-eshop.git
+        repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
         revision: master
         files:
           - path: "resources/argocd/configuration/*.json"
@@ -15,7 +15,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: http://@GITEA_HOSTNAME/gitea/watches-eshop.git
+        repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
         targetRevision: '{{ argo_config.branch }}'
         path: 'deploy/catalog/overlays/{{ environment }}'
       destination:
