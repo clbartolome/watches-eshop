@@ -82,10 +82,31 @@ info "Configuring GITEA repository (user, repositories and host)"
 sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
 oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 
+# BUILDS
+# This will be executed by Tekton
+
+
+
 # ARGOCD
 info "Using default ArgoCD instance in openshift-gitops namespace"
+ARGO_URL=$(oc get route openshift-gitops-server -ojsonpath='{.spec.host}' -n openshift-gitops)
+ARGO_PASS=$(oc get secret openshift-gitops-cluster -n openshift-gitops -ojsonpath='{.data.admin\.password}' | base64 -d)
+info "ArgoCD URL: "
+
 
 info "Creating Watches Eshop Applications"
 sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f -
 
 # ##############################################################################
+
+##############################################################################
+# -- INFORMATION --
+info "-INSTALLATION FINISHED-"
+info "GITEA URL: http://$GITEA_HOSTNAME"
+info "GITEA USER: gitea"
+info "GITEA PASS: openshift"
+info "ArgoCD URL: $ARGO_URL"
+info "ArgoCD USER: admin"
+info "ArgoCD PASS: $ARGO_PASS"
+info "- -"
+##############################################################################

@@ -4,10 +4,6 @@ kind: Kustomization
 bases:
 - ../../base
 
-resources:
-- buildConfig.yaml
-- imageStream.yaml
-
 nameSuffix: -dev
 
 commonLabels:

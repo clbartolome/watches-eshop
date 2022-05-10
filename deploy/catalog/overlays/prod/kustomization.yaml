@@ -4,8 +4,6 @@ kind: Kustomization
 bases:
 - ../../base
 
-resources: {}
-
 nameSuffix: -prod
 
 commonLabels:

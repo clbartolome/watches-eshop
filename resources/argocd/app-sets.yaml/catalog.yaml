@@ -5,10 +5,10 @@ metadata:
 spec:
   generators:
     - git:
-      repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
-      revision: master
-      files:
-        - path: "resources/argocd/configuration/*.json"
+        repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
+        revision: master
+        files:
+          - path: "resources/argocd/configuration/*.json"
   template:
     metadata:
       name: 'catalog-{{ environment }}'
