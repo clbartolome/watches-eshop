@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: watches-eshop
-  namespace: watches-eshop-cicd
+  namespace: openshift-gitops
   # ONLY if you want these to cascade delete
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -14,6 +14,6 @@ spec:
     path: resources/argocd/app-sets.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: watches-eshop-cicd
+    namespace: openshift-gitops
   syncPolicy:
     automated: {}

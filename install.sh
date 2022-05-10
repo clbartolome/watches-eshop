@@ -61,14 +61,14 @@ declare -r DB_PASS="pa5sw0rD"
 info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
 oc apply -f  resources/ocp_namespaces.yaml
 
-# # DATABASES
-# # info "Deploying databases into application namespaces"
-# create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
-# create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
-# # create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
-# # create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
-# # create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
-# # create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
+# DATABASES
+# info "Deploying databases into application namespaces"
+create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
+create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
+# create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
+# create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
+# create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
+# create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
 
 # GITEA
 info "Deploying GITEA to $CICD_PR namespace"
@@ -83,15 +83,9 @@ sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml
 oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 
 # ARGOCD
-# info "Creating ArgoCD instance"
-# oc apply -f resources/argocd/instance.yaml -n $CICD_PR
-# sleep 10
-# oc wait pod -l app.kubernetes.io/name=argocd-server --for=condition=Ready -n $CICD_PR
+info "Using default ArgoCD instance in openshift-gitops namespace"
 
-# info "Creating Watches Eshop Applications"
-sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f - -n $CICD_PR
-
-
-
+info "Creating Watches Eshop Applications"
+sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f -
 
 # ##############################################################################
