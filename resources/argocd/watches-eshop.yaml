@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: http://@GITEA_HOST_CHANGEME/gitea/watches-eshop.git
+    repoURL: http://@GITEA_HOSTNAME/gitea/watches-eshop.git
     targetRevision: master
     path: resources/argocd/app-sets.yaml
   destination:

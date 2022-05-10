@@ -29,9 +29,9 @@ data:
     ROOT = /gitea-repositories
 
     [server]
-    ROOT_URL         = http://@HOSTNAME
-    SSH_DOMAIN       = @HOSTNAME
-    DOMAIN           = @HOSTNAME
+    ROOT_URL         = http://@GITEA_HOSTNAME
+    SSH_DOMAIN       = @GITEA_HOSTNAME
+    DOMAIN           = @GITEA_HOSTNAME
     HTTP_PORT        = 3000
     SSH_PORT         = 2022
     DISABLE_SSH      = false

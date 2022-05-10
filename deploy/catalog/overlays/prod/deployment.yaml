@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: catalog
   annotations:
-    app.openshift.io/connects-to: '[{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"catalog-db-dev"}]'
+    app.openshift.io/connects-to: '[{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"catalog-db-prod"}]'
