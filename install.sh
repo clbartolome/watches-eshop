@@ -58,55 +58,81 @@ declare -r DB_PASS="pa5sw0rD"
 # oc version >/dev/null 2>&1 || err "no oc client found or not logged into a valid OCP cluster"
 
 # NAMESPACES
-info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
-oc apply -f  resources/ocp_namespaces.yaml
+# info "Creating namespaces $CICD_PR, $DEV_PR, $PRO_PR"
+# oc apply -f  resources/ocp_namespaces.yaml
 
 # DATABASES
 # info "Deploying databases into application namespaces"
-create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
-create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
+# create_postgres "catalog-db-dev" $DB_USER $DB_PASS "catalog-db" $DEV_PR $DEV_PR 
+# create_postgres "catalog-db-prod" $DB_USER $DB_PASS "catalog-db" $PRO_PR $PRO_PR
 # create_postgres "order-db-dev" $DB_USER $DB_PASS "order-db" $DEV_PR $DEV_PR 
 # create_postgres "order-db-prod" $DB_USER $DB_PASS "order-db" $PRO_PR $PRO_PR
 # create_mongo "payment-db-dev" $DB_USER $DB_PASS $DEV_PR $DEV_PR 
 # create_mongo "payment-db-prod" $DB_USER $DB_PASS $PRO_PR $PRO_PR
 
 # GITEA
-info "Deploying GITEA to $CICD_PR namespace"
-oc apply -f resources/gitea/gitea_deployment.yaml -n $CICD_PR
+# info "Deploying GITEA to $CICD_PR namespace"
+# oc apply -f resources/gitea/gitea_deployment.yaml -n $CICD_PR
 
 GITEA_HOSTNAME=$(oc get route gitea -o template --template='{{.spec.host}}' -n $CICD_PR)
-sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
-oc rollout status deployment/gitea -n $CICD_PR
+# sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration.yaml | oc create -f - -n $CICD_PR
+# oc rollout status deployment/gitea -n $CICD_PR
 
-info "Configuring GITEA repository (user, repositories and host)"
-sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
-oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
+# info "Configuring GITEA repository (user, repositories and host)"
+# sed "s/@HOSTNAME/$GITEA_HOSTNAME/g" resources/gitea/gitea_configuration_job.yaml | oc apply -f - --wait -n $CICD_PR
+# oc wait --for=condition=complete job/configure-gitea --timeout=60s -n $CICD_PR
 
-# BUILDS
-# This will be executed by Tekton
+# NEXUS
+info "Deploying NEXUS to $CICD_PR namespace"
+# oc apply -f resources/nexus.yaml -n $CICD_PR
+# oc wait --for=condition=complete deploy/nexus --timeout=300s -n $CICD_PR
+NEXUS_URL=$(oc get route nexus -o jsonpath='{.spec.host}' -n $CICD_PR)
+NEXUS_PASS=$(oc exec deploy/nexus -n $CICD_PR -- cat /nexus-data/admin.password)
+
+# PIPELINES
+info "Configuring Openshift Pipelines"
+# oc policy add-role-to-user edit system:serviceaccount:$CICD_PR:pipeline -n $DEV_PR
+# oc policy add-role-to-user edit system:serviceaccount:$CICD_PR:pipeline -n $PRO_PR
+# oc policy add-role-to-user system:image-puller system:serviceaccount:$DEV_PR:default -n $CICD_PR
+# oc policy add-role-to-user system:image-puller system:serviceaccount:$PRO_PR:default -n $CICD_PR
+grep -rl "@NEXUS_PASS"  tekton/configuration/maven-settings.yaml | xargs sed "s/@NEXUS_PASS/$NEXUS_PASS/g" | oc apply -n $CICD_PR -f -
+oc apply -f tekton/configuration/persistence.yaml -n $CICD_PR
+oc apply -f tekton/tasks/ -n $CICD_PR
+oc apply -f tekton/pipelines/ -n $CICD_PR
+oc create -f tekton/runs/catalog-run.yaml  -n $CICD_PR
 
 
+# # ARGOCD
+# info "Using default ArgoCD instance in openshift-gitops namespace"
+# ARGO_URL=$(oc get route openshift-gitops-server -ojsonpath='{.spec.host}' -n openshift-gitops)
+# ARGO_PASS=$(oc get secret openshift-gitops-cluster -n openshift-gitops -ojsonpath='{.data.admin\.password}' | base64 -d)
+# info "ArgoCD URL: "
 
-# ARGOCD
-info "Using default ArgoCD instance in openshift-gitops namespace"
-ARGO_URL=$(oc get route openshift-gitops-server -ojsonpath='{.spec.host}' -n openshift-gitops)
-ARGO_PASS=$(oc get secret openshift-gitops-cluster -n openshift-gitops -ojsonpath='{.data.admin\.password}' | base64 -d)
-info "ArgoCD URL: "
 
+# info "Creating Watches Eshop Applications"
+# sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f -
 
-info "Creating Watches Eshop Applications"
-sed "s/@GITEA_HOSTNAME/$GITEA_HOSTNAME/g" resources/argocd/watches-eshop.yaml | oc apply -f -
+# # ##############################################################################
 
 # ##############################################################################
+# # -- INFORMATION --
+# info "-INSTALLATION FINISHED-"
+# info "GITEA URL: http://$GITEA_HOSTNAME"
+# info "GITEA USER: gitea"
+# info "GITEA PASS: openshift"
+# info "ArgoCD URL: $ARGO_URL"
+# info "ArgoCD USER: admin"
+# info "ArgoCD PASS: $ARGO_PASS"
+# info "- -"
+# ##############################################################################
 
-##############################################################################
-# -- INFORMATION --
-info "-INSTALLATION FINISHED-"
-info "GITEA URL: http://$GITEA_HOSTNAME"
-info "GITEA USER: gitea"
-info "GITEA PASS: openshift"
-info "ArgoCD URL: $ARGO_URL"
-info "ArgoCD USER: admin"
-info "ArgoCD PASS: $ARGO_PASS"
-info "- -"
-##############################################################################
+# oc policy add-role-to-user edit system:serviceaccount:aa:pipeline -n aa-dev
+# oc policy add-role-to-user system:image-puller system:serviceaccount:aa-dev:default -n aa
+
+# oc apply -f tekton/configuration/ -n aa
+
+# oc apply -f tekton/tasks/ -n aa
+
+# oc apply -f tekton/pipelines/ -n aa
+
+# oc create -f tekton/runs/catalog-run.yaml  -n aa

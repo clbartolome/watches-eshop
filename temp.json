@@ -1,0 +1,65 @@
+{
+  "apiVersion": "v1",
+  "kind": "Namespace",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{\"openshift.io/description\":\"Watches EShop CICD environment\",\"openshift.io/display-name\":\"Watches EShop CICD\"},\"labels\":{\"kubernetes.io/metadata.name\":\"watches-eshop-cicd\"},\"name\":\"watches-eshop-cicd\"},\"spec\":{\"finalizers\":[\"kubernetes\"]}}\n",
+      "openshift.io/description": "Watches EShop CICD environment",
+      "openshift.io/display-name": "Watches EShop CICD",
+      "openshift.io/sa.scc.mcs": "s0:c26,c15",
+      "openshift.io/sa.scc.supplemental-groups": "1000680000/10000",
+      "openshift.io/sa.scc.uid-range": "1000680000/10000"
+    },
+    "creationTimestamp": "2022-05-10T10:39:17Z",
+    "deletionTimestamp": "2022-05-12T09:39:37Z",
+    "labels": {
+      "kubernetes.io/metadata.name": "watches-eshop-cicd",
+      "openshift-pipelines.tekton.dev/namespace-reconcile-version": "v1.5"
+    },
+    "name": "watches-eshop-cicd",
+    "resourceVersion": "505697",
+    "uid": "002c71da-02ab-447a-91b7-ffad6bdee49a"
+  },
+  "spec": {
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2022-05-12T09:39:44Z",
+        "message": "All resources successfully discovered",
+        "reason": "ResourcesDiscovered",
+        "status": "False",
+        "type": "NamespaceDeletionDiscoveryFailure"
+      },
+      {
+        "lastTransitionTime": "2022-05-12T09:39:44Z",
+        "message": "All legacy kube types successfully parsed",
+        "reason": "ParsedGroupVersions",
+        "status": "False",
+        "type": "NamespaceDeletionGroupVersionParsingFailure"
+      },
+      {
+        "lastTransitionTime": "2022-05-12T09:39:44Z",
+        "message": "All content successfully deleted, may be waiting on finalization",
+        "reason": "ContentDeleted",
+        "status": "False",
+        "type": "NamespaceDeletionContentFailure"
+      },
+      {
+        "lastTransitionTime": "2022-05-12T09:39:44Z",
+        "message": "Some resources are remaining: applications.argoproj.io has 1 resource instances",
+        "reason": "SomeResourcesRemain",
+        "status": "True",
+        "type": "NamespaceContentRemaining"
+      },
+      {
+        "lastTransitionTime": "2022-05-12T09:39:44Z",
+        "message": "Some content in the namespace has finalizers remaining: resources-finalizer.argocd.argoproj.io in 1 resource instances",
+        "reason": "SomeFinalizersRemain",
+        "status": "True",
+        "type": "NamespaceFinalizersRemaining"
+      }
+    ],
+    "phase": "Terminating"
+  }
+}

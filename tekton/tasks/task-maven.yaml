@@ -1,0 +1,82 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: maven
+  labels:
+    app.kubernetes.io/version: "0.2"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/tags: build-tool
+spec:
+  description: >-
+    This Task can be used to run a Maven build.
+
+  workspaces:
+    - name: source
+      description: The workspace consisting of maven project.
+    - name: maven-settings
+      description: >-
+        The workspace consisting of the custom maven settings
+        provided by the user.
+  params:
+    - name: MAVEN_IMAGE
+      type: string
+      description: Maven base image
+      default: gcr.io/cloud-builders/mvn #tag: latest
+    - name: GOALS
+      description: maven goals to run
+      type: array
+      default:
+        - "package"
+    - name: MAVEN_MIRROR_URL
+      description: The Maven repository mirror url
+      type: string
+      default: ""
+    - name: SERVER_USER
+      description: The username for the server
+      type: string
+      default: ""
+    - name: SERVER_PASSWORD
+      description: The password for the server
+      type: string
+      default: ""
+    - name: PROXY_USER
+      description: The username for the proxy server
+      type: string
+      default: ""
+    - name: PROXY_PASSWORD
+      description: The password for the proxy server
+      type: string
+      default: ""
+    - name: PROXY_PORT
+      description: Port number for the proxy server
+      type: string
+      default: ""
+    - name: PROXY_HOST
+      description: Proxy server Host
+      type: string
+      default: ""
+    - name: PROXY_NON_PROXY_HOSTS
+      description: Non proxy server host
+      type: string
+      default: ""
+    - name: PROXY_PROTOCOL
+      description: Protocol for the proxy ie http or https
+      type: string
+      default: "http"
+    - name: CONTEXT_DIR
+      type: string
+      description: >-
+        The context directory within the repository for sources on
+        which we want to execute maven goals.
+      default: "."
+  steps:
+    - name: mvn-goals
+      image: $(params.MAVEN_IMAGE)
+      workingDir: $(workspaces.source.path)/$(params.CONTEXT_DIR)
+      command: ["/usr/bin/mvn"]
+      args:
+        - -Dmaven.repo.local=$(workspaces.source.path)/m2
+        - -s
+        - $(workspaces.maven-settings.path)/settings.xml
+        - "$(params.GOALS)"
