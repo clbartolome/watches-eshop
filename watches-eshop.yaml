@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: watches-eshop
+  namespace: ansible-eda-demo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://gitlab.com/ansible-eda-dynatrace-demo/watches-eshop.git
+    targetRevision: master
+    path: app-sets
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ansible-eda-demo
+  syncPolicy:
+    automated: {}

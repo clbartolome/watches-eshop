@@ -1,12 +1,12 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: catalog
+  name: eshop-ui
 spec:
   port:
     targetPort: 8080-tcp
   to:
     kind: Service
-    name: catalog
+    name: eshop-ui
     weight: 100
   wildcardPolicy: None

@@ -2,10 +2,23 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 commonLabels:
-  app.kubernetes.io/name: ubi8-openjdk-11
-  app.openshift.io/runtime: spring-boot
+  app: eshop-ui
+  app.kubernetes.io/component: eshop-ui
+  app.kubernetes.io/instance: eshop-ui
+  app.kubernetes.io/part-of: watches-eshop
+  app.openshift.io/runtime: nginx
 
 resources:
 - deployment.yaml
 - service.yaml
 - route.yaml
+
+configMapGenerator:
+- name: eshop-config
+  files:
+  - config.json
+
+images:
+- name: eshop-ui
+  newName: quay.io/ansible_eda/eshop-ui
+  newTag: 1.0.0

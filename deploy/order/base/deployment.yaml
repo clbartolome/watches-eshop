@@ -1,32 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog
+  name: order
   annotations:
-    app.openshift.io/connects-to: '[{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"catalog-db"}]'
+    app.openshift.io/connects-to: '[{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"order-db"}]'
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   strategy:
     rollingUpdate:
-      maxSurge: 25% 
+      maxSurge: 25%
       maxUnavailable: 25%
     type: RollingUpdate
   template:
     metadata:
     spec: 
       containers:
-      - name: catalog
+      - name: order
         envFrom: 
         - configMapRef:
-            name: catalog-configuration
+            name: order-configuration
         - secretRef:
-            name: catalog-secured-configuration
-        image: catalog:version
+            name: order-secured-configuration
+        image: order:version
         imagePullPolicy: IfNotPresent
         ports:
+        - containerPort: 8778
+          protocol: TCP
         - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
           protocol: TCP
         resources: {}
         terminationMessagePath: /dev/termination-log

@@ -1,0 +1,155 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: "2023-05-14T11:52:00Z"
+    labels:
+      app: eshop-ui
+      app.kubernetes.io/component: eshop-ui
+      app.kubernetes.io/instance: eshop-ui
+    name: eshop-ui
+    namespace: watches-eshop
+    resourceVersion: "1141201"
+    uid: c6159726-aaad-4300-b053-a890a2c892cf
+  spec:
+    clusterIP: 172.30.18.58
+    clusterIPs:
+    - 172.30.18.58
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deployment: eshop-ui
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"order"},{"apiVersion":"apps/v1","kind":"Deployment","name":"catalog"},{"apiVersion":"apps/v1","kind":"Deployment","name":"payment"}]'
+      deployment.kubernetes.io/revision: "6"
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"eshop-ui:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"eshop-ui\")].image"}]'
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: "2023-05-14T11:52:00Z"
+    generation: 7
+    labels:
+      app: eshop-ui
+      app.kubernetes.io/component: eshop-ui
+      app.kubernetes.io/instance: eshop-ui
+      app.kubernetes.io/part-of: watches-eshop
+      app.openshift.io/runtime: nginx
+    name: eshop-ui
+    namespace: watches-eshop
+    resourceVersion: "2480165"
+    uid: cd0d39ee-cb61-4795-a67c-88fac029e977
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        deployment: eshop-ui
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          deployment: eshop-ui
+      spec:
+        containers:
+        - image: image-registry.openshift-image-registry.svc:5000/watches-eshop/eshop-ui@sha256:0379b2cc4b350a52081203aa337128fca5f4734ddafca0fcc6d6cb9dbfbcfac5
+          imagePullPolicy: IfNotPresent
+          name: eshop-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/share/nginx/html/assets/config
+            name: volume-fpp8z
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: eshop-config
+          name: volume-fpp8z
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2023-05-14T11:52:03Z"
+      lastUpdateTime: "2023-05-14T11:52:03Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2023-05-14T11:52:00Z"
+      lastUpdateTime: "2023-05-16T11:57:49Z"
+      message: ReplicaSet "eshop-ui-79984b95b4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 7
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: "2023-05-14T11:55:00Z"
+    labels:
+      app: eshop-ui
+      app.kubernetes.io/component: eshop-ui
+      app.kubernetes.io/instance: eshop-ui
+    name: eshop-ui
+    namespace: watches-eshop
+    resourceVersion: "1142378"
+    uid: f46e6ea0-6904-4b98-82bd-1b57e25ac4d4
+  spec:
+    host: eshop-ui-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: eshop-ui
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: "2023-05-14T11:55:01Z"
+        status: "True"
+        type: Admitted
+      host: eshop-ui-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com
+      routerCanonicalHostname: router-default.apps.ocp4cluster.ocp4.cfernand.com
+      routerName: default
+      wildcardPolicy: None
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

@@ -1,0 +1,8 @@
+{
+  "watchUrl": "http://catalog-test.apps.cluster-x9m69.x9m69.sandbox961.opentlc.com",
+  "watchPath": "/watches",
+  "paymentUrl": "http://payment-test.apps.cluster-x9m69.x9m69.sandbox961.opentlc.com",
+  "paymentPath": "/payments",
+  "orderUrl": "http://order-test.apps.cluster-x9m69.x9m69.sandbox961.opentlc.com",
+  "orderPath": "/orders"
+}
