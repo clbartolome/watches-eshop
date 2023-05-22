@@ -2,10 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: watches-eshop-applications
+  namespace: argo-gitops
 spec:
   generators:
     - git:
-        repoURL: https://gitlab.com/ansible-eda-dynatrace-demo/watches-eshop.git
+        repoURL: https://github.com/clbartolome/watches-eshop
         revision: master
         files:
           - path: "applications/*.json"
@@ -15,7 +16,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://gitlab.com/ansible-eda-dynatrace-demo/watches-eshop.git
+        repoURL: https://github.com/clbartolome/watches-eshop
         targetRevision: '{{ argo_config.branch }}'
         path: '{{ argo_config.path }}'
       destination:

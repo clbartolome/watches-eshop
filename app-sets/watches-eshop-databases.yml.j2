@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: watches-eshop-databases
+  namespace: argo-gitops
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/clbartolome/watches-eshop
+        files:
+          - path: "databases/*.json"
+  template:
+    metadata:
+      name: '{{ app_name }}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/clbartolome/watches-eshop
+        targetRevision: '{{ argo_config.branch }}'
+        path: '{{ argo_config.path }}'
+      destination:
+        server: '{{ k8s_cluster.address }}'
+        namespace: '{{ k8s_cluster.namespace }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

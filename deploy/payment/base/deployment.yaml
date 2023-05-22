@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: payment
   annotations:
-    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deploy","name":"payment-db"}]'
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"payment-db"}]'
 spec:
   progressDeadlineSeconds: 600
   replicas: 1

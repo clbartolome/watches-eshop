@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app: order-db
+  app.kubernetes.io/part-of: watches-eshop
+  app.openshift.io/runtime: postgresql
+
+resources:
+- deployment.yaml
+- service.yaml
+- pvc.yaml
+
+secretGenerator:
+- name: order-db-secured-configuration
+  envs:
+  - secured.env
+
+images:
+- name: postgres
+  newName: image-registry.openshift-image-registry.svc:5000/openshift/postgresql
+  newTag: 10-el8

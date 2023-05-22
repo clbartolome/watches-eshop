@@ -1,8 +1,0 @@
-{
-  "watchUrl": "http://catalog-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
-  "watchPath": "/watches",
-  "paymentUrl": "http://payment-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
-  "paymentPath": "/payments",
-  "orderUrl": "http://order-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
-  "orderPath": "/orders"
-}

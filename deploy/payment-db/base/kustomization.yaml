@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app: payment-db
+  app.kubernetes.io/component: payment-db
+  app.kubernetes.io/instance: payment-db
+  app.kubernetes.io/part-of: watches-eshop
+  app.openshift.io/runtime: mongodb
+
+resources:
+- deployment.yaml
+- service.yaml
+
+secretGenerator:
+- name: payment-db-secured-configuration
+  envs:
+  - secured.env
+
+images:
+- name: mongo
+  newName: mongo
+  newTag: "6"
