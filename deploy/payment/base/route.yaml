@@ -4,7 +4,7 @@ metadata:
   name: payment
 spec:
   port:
-    targetPort: 8080-tcp
+    targetPort: 5000-tcp
   to:
     kind: Service
     name: payment
