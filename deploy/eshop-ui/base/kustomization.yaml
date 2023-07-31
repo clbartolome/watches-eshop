@@ -20,5 +20,5 @@ configMapGenerator:
 
 images:
 - name: eshop-ui
-  newName: quay.io/ansible_eda/eshop-ui
+  newName: quay.io/demo-applications/eshop-ui
   newTag: 1.0.0

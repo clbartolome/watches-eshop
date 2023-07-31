@@ -12,7 +12,6 @@ commonLabels:
 resources:
 - deployment.yaml
 - service.yaml
-- route.yaml
 
 configMapGenerator:
 - name: catalog-configuration
@@ -26,5 +25,5 @@ secretGenerator:
 
 images:
 - name: catalog
-  newName: quay.io/ansible_eda/catalog
+  newName: quay.io/demo-applications/eshop-catalog
   newTag: 1.0.0

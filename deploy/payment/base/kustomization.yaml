@@ -11,7 +11,6 @@ commonLabels:
 resources:
 - deployment.yaml
 - service.yaml
-- route.yaml
 
 configMapGenerator:
 - name: payment-configuration
@@ -25,5 +24,5 @@ secretGenerator:
 
 images:
 - name: payment
-  newName: quay.io/ansible_eda/payment
+  newName: quay.io/demo-applications/eshop-payment
   newTag: 1.0.0
