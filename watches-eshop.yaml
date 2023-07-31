@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/clbartolome/watches-eshop
-    targetRevision: master
+    targetRevision: ocp4-cfernand-com
     path: app-sets
   destination:
     server: https://kubernetes.default.svc

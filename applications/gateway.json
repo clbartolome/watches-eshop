@@ -2,7 +2,7 @@
   "app_name": "gateway",
   "owner": "calopezb@redhat.com",
   "argo_config": {
-    "branch": "master",
+    "branch": "ocp4-cfernand-com",
     "path": "deploy/gateway/base",
     "prune": true,
     "selfHeal": true

@@ -2,7 +2,7 @@
   "app_name": "eshop-ui",
   "owner": "calopezb@redhat.com",
   "argo_config": {
-    "branch": "master",
+    "branch": "ocp4-cfernand-com",
     "path": "deploy/eshop-ui/base",
     "prune": true,
     "selfHeal": true
