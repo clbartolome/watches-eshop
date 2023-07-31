@@ -1,9 +1,9 @@
 {
-  "app_name": "order-db",
+  "app_name": "gateway",
   "owner": "calopezb@redhat.com",
   "argo_config": {
     "branch": "ocp4-cfernand-com",
-    "path": "deploy/order-db/base",
+    "path": "deploy/gateway/base",
     "prune": true,
     "selfHeal": true
   },

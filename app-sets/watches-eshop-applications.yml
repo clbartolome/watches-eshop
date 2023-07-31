@@ -1,14 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: watches-eshop-databases
-  namespace: argo-gitops
+  name: watches-eshop-applications
+  namespace: openshift-gitops
 spec:
   generators:
     - git:
         repoURL: https://github.com/clbartolome/watches-eshop
+        revision: ocp4-cfernand-com
         files:
-          - path: "databases/*.json"
+          - path: "applications/*.json"
   template:
     metadata:
       name: '{{ app_name }}'

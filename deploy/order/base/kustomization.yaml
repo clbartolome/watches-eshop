@@ -11,7 +11,6 @@ commonLabels:
 resources:
 - deployment.yaml
 - service.yaml
-- route.yaml
 
 configMapGenerator:
 - name: order-configuration
@@ -25,5 +24,5 @@ secretGenerator:
 
 images:
 - name: order
-  newName: quay.io/ansible_eda/order
+  newName: quay.io/demo-applications/eshop-order
   newTag: 1.0.0

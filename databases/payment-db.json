@@ -2,7 +2,7 @@
   "app_name": "payment-db",
   "owner": "calopezb@redhat.com",
   "argo_config": {
-    "branch": "master",
+    "branch": "ocp4-cfernand-com",
     "path": "deploy/payment-db/base",
     "prune": true,
     "selfHeal": true

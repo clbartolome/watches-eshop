@@ -1,0 +1,8 @@
+{
+  "watchUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "watchPath": "/gw-catalog/watches",
+  "paymentUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "paymentPath": "/gw-payment/payments",
+  "orderUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "orderPath": "/gw-order/orders"
+}
