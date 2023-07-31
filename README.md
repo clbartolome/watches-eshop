@@ -4,7 +4,7 @@ Databases are created manually to simplify argocd deployment and configuration (
 
 ```sh
 # Create Namespaces
-oc new-project argo-gitops
+oc new-project openshift-gitops
 oc new-project watches-eshop
 
 # Install ArgoCD

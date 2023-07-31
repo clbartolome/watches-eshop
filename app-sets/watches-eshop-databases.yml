@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: watches-eshop-databases
-  namespace: argo-gitops
+  namespace: openshift-gitops
 spec:
   generators:
     - git:

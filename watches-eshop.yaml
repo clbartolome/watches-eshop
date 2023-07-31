@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: watches-eshop
-  namespace: argo-gitops
+  namespace: openshift-gitops
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -13,6 +13,6 @@ spec:
     path: app-sets
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-gitops
+    namespace: openshift-gitops
   syncPolicy:
     automated: {}
