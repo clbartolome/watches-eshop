@@ -2,7 +2,7 @@
   "app_name": "catalog-db",
   "owner": "calopezb@redhat.com",
   "argo_config": {
-    "branch": "ocp4-cfernand-com",
+    "branch": "CHANGE_BRANCH_NAME",
     "path": "deploy/catalog-db/base",
     "prune": true,
     "selfHeal": true

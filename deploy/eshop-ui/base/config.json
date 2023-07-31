@@ -1,8 +1,8 @@
 {
-  "watchUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "watchUrl": "http://gateway-watches-eshop.CHANGE_APPS_URL",
   "watchPath": "/gw-catalog/watches",
-  "paymentUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "paymentUrl": "http://gateway-watches-eshop.CHANGE_APPS_URL",
   "paymentPath": "/gw-payment/payments",
-  "orderUrl": "http://gateway-watches-eshop.apps.ocp4cluster.ocp4.cfernand.com",
+  "orderUrl": "http://gateway-watches-eshop.CHANGE_APPS_URL",
   "orderPath": "/gw-order/orders"
 }

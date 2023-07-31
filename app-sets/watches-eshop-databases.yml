@@ -7,7 +7,7 @@ spec:
   generators:
     - git:
         repoURL: https://github.com/clbartolome/watches-eshop
-        revision: ocp4-cfernand-com
+        revision: CHANGE_BRANCH_NAME
         files:
           - path: "databases/*.json"
   template:
