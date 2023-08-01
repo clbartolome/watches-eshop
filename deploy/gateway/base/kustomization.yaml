@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: gateway
+  version: v1
   app.kubernetes.io/component: gateway
   app.kubernetes.io/instance: gateway
   app.kubernetes.io/part-of: watches-eshop
