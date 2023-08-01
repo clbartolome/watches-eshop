@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: catalog
+  version: v1
   app.kubernetes.io/component: catalog
   app.kubernetes.io/instance: catalog
   app.kubernetes.io/name: ubi8-openjdk-11

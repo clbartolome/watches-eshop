@@ -3,7 +3,7 @@
   "owner": "calopezb@redhat.com",
   "argo_config": {
     "branch": "ocp4-cfernand-com",
-    "path": "deploy/payment/base",
+    "path": "deploy/payment/overlays/service-mesh",
     "prune": true,
     "selfHeal": true
   },

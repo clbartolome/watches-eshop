@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: payment-db
+  version: v1
   app.kubernetes.io/component: payment-db
   app.kubernetes.io/instance: payment-db
   app.kubernetes.io/part-of: watches-eshop

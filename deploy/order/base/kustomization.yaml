@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: order
+  version: v1
   app.kubernetes.io/component: order
   app.kubernetes.io/instance: order
   app.kubernetes.io/part-of: watches-eshop

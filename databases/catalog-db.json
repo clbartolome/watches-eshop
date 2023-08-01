@@ -3,7 +3,7 @@
   "owner": "calopezb@redhat.com",
   "argo_config": {
     "branch": "ocp4-cfernand-com",
-    "path": "deploy/catalog-db/base",
+    "path": "deploy/catalog-db/overlays/service-mesh",
     "prune": true,
     "selfHeal": true
   },

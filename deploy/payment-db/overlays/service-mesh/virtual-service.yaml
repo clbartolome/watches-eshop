@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payment-db
+spec:
+  hosts:
+  - payment-db
+  http:
+  - route:
+    - destination:
+        host: payment-db
+        subset: v1

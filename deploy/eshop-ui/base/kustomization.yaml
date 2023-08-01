@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: eshop-ui
+  version: v1
   app.kubernetes.io/component: eshop-ui
   app.kubernetes.io/instance: eshop-ui
   app.kubernetes.io/part-of: watches-eshop

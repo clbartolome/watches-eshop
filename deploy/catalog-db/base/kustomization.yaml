@@ -3,6 +3,7 @@ kind: Kustomization
 
 commonLabels:
   app: catalog-db
+  version: v1
   app.kubernetes.io/part-of: watches-eshop
   app.openshift.io/runtime: postgresql
 
