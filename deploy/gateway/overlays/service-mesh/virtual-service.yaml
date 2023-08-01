@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: eshop-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - eshop-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /gw-catalog
+    - uri:
+        prefix: /gw-payment
+    - uri:
+        prefix: /gw-order
+    route:
+    - destination:
+        host: gateway
+        port:
+          number: 8080
