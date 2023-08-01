@@ -4,6 +4,10 @@ kind: Kustomization
 bases:
   - ../../base
 
+resources:
+- gateway.yaml
+- virtual-service.yaml
+
 patchesStrategicMerge:
 - |-
   apiVersion: route.openshift.io/v1
