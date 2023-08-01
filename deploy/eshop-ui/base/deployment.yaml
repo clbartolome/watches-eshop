@@ -12,9 +12,6 @@ spec:
       maxUnavailable: 25%
     type: RollingUpdate
   template:
-    metadata:
-      annotations:
-        sidecar.istio.io/inject: "true"
     spec: 
       containers:
       - name: eshop-ui
